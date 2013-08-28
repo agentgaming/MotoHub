@@ -4,7 +4,7 @@
     <groupId>net.agentgaming.motohub</groupId>
     <artifactId>MotoHub</artifactId>
     <version>${env.BUILD_NUMBER}</version>
-    <name>MotoServer</name>
+    <name>MotoHub</name>
     <url>http://agentgaming.net/</url>
     <repositories>
         <repository>
