@@ -1,0 +1,1 @@
+MotoHub is a plugin that introduces hub specific features and modifications

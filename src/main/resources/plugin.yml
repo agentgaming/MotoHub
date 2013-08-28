@@ -1,0 +1,4 @@
+name: MotoHub
+main: com.mike724.motohub.MotoHub
+version: ${version}
+authors: [Mike724, Dakota628]
