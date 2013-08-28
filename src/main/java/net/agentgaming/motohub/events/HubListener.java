@@ -1,6 +1,5 @@
 package net.agentgaming.motohub.events;
 
-import net.agentgaming.motohub.effects.PotionSetter;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,8 +24,7 @@ public class HubListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoinMonitor(PlayerJoinEvent event) {
-        event.setJoinMessage(ChatColor.YELLOW+event.getPlayer().getDisplayName()+" has joined the hub");
-        event.getPlayer().addPotionEffects(PotionSetter.effects);
+        event.setJoinMessage(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " has joined the hub");
     }
 
     @EventHandler(priority = EventPriority.HIGH)

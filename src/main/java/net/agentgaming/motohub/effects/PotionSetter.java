@@ -10,16 +10,17 @@ import java.util.List;
 
 public class PotionSetter implements Runnable {
 
-    public static List<PotionEffect> effects = new ArrayList<>();
-
-    static {
-        effects.add(new PotionEffect(PotionEffectType.SPEED, 1200, 2, true));
-        effects.add(new PotionEffect(PotionEffectType.JUMP, 1200, 2, true));
-    }
+    public static List<PotionEffect> effects = new ArrayList<PotionEffect>() {{
+        add(new PotionEffect(PotionEffectType.SPEED, 1200, 2, true));
+        add(new PotionEffect(PotionEffectType.JUMP, 1200, 2, true));
+    }};
 
     @Override
     public void run() {
         for(Player p : Bukkit.getOnlinePlayers()) {
+            for(PotionEffect pe : p.getActivePotionEffects()) {
+                p.removePotionEffect(pe.getType());
+            }
             p.addPotionEffects(effects);
         }
     }
