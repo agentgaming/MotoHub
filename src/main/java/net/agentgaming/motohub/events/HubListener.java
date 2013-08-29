@@ -1,6 +1,7 @@
 package net.agentgaming.motohub.events;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 
 @SuppressWarnings("unused")
 public class HubListener implements Listener {
@@ -27,6 +29,7 @@ public class HubListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoinMonitor(PlayerJoinEvent event) {
         event.setJoinMessage(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " has joined the hub");
+        event.getPlayer().setGameMode(GameMode.ADVENTURE);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -66,5 +69,11 @@ public class HubListener implements Listener {
         if(e.getInventory().getType() != InventoryType.PLAYER) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onWeatherChange(WeatherChangeEvent event) {
+        //No weather on ANY world
+        event.setCancelled(true);
     }
 }
