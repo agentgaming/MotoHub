@@ -1,5 +1,8 @@
 package net.agentgaming.motohub.events;
 
+import com.mike724.motoapi.portals.PortalEnterEvent;
+import net.agentgaming.motohub.MotoHub;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -20,6 +23,16 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 
 @SuppressWarnings("unused")
 public class HubListener implements Listener {
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPortalEnter(PortalEnterEvent event) {
+        Player p = event.getPlayer();
+        Integer id = event.getPortal();
+        Bukkit.broadcastMessage("Player "+p.getName()+" has entered portal #"+id);
+        if(id == MotoHub.getInstance().tjPortalID) {
+            Bukkit.broadcastMessage("This is the TeamJug portal.");
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuitMonitor(PlayerQuitEvent event) {

@@ -58,6 +58,13 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mike724.motoserver</groupId>
+            <artifactId>MotoServer</artifactId>
+            <version>(1.0,]</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>
