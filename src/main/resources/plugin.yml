@@ -2,3 +2,4 @@ name: MotoHub
 main: net.agentgaming.motohub.MotoHub
 version: ${version}
 authors: [Mike724, Dakota628]
+depend: [MotoServer]
