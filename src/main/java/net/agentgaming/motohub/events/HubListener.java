@@ -72,7 +72,7 @@ public class HubListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageEvent e) {
-        if(e.getEntity() instanceof Player) {
+        if(e.getEntity() instanceof Player && e.getCause() != EntityDamageEvent.DamageCause.VOID) {
             e.setCancelled(true);
         }
     }
