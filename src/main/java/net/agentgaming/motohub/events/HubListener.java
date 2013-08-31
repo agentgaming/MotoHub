@@ -42,6 +42,7 @@ public class HubListener implements Listener {
     public void onPlayerJoinMonitor(PlayerJoinEvent event) {
         event.setJoinMessage(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " has joined the hub");
         event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        MotoHub.getInstance().getMidi().playMidiForPlayer("rigby", event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -107,8 +108,6 @@ public class HubListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent event) {
-        if (!event.getPlayer().hasPlayedBefore()) {
-            event.getPlayer().teleport(MotoHub.getInstance().getWorldSpawn());
-        }
+        event.getPlayer().teleport(MotoHub.getInstance().getWorldSpawn());
     }
 }
