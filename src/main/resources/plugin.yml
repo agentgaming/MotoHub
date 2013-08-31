@@ -3,3 +3,8 @@ main: net.agentgaming.motohub.MotoHub
 version: ${version}
 authors: [Mike724, Dakota628]
 depend: [MotoServer]
+commands:
+   spawn:
+      description: Teleport to the hub spawn.
+      usage: /spawn [player]
+      aliases: [hub]

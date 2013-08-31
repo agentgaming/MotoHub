@@ -1,6 +1,7 @@
 package net.agentgaming.motohub;
 
 import com.mike724.motoapi.portals.PortalManager;
+import com.mike724.motoserver.MotoCommands;
 import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.effects.PotionSetter;
 import net.agentgaming.motohub.events.HubListener;
@@ -16,6 +17,9 @@ public class MotoHub extends JavaPlugin {
     //Portals
     public int tjPortalID;
 
+    //World spawn
+    Location worldSpawn;
+
     @Override
     public void onEnable() {
         //Set our instance
@@ -27,6 +31,10 @@ public class MotoHub extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new HubListener(), this);
 
         setupPortals();
+
+        this.worldSpawn = new Location(Bukkit.getWorlds().get(0), 0.5F, 65, 0.5F, 0, 0);
+
+        getCommand("spawn").setExecutor(new HubCommands(this));
 
         this.getLogger().info("MotoHub Enabled");
     }
@@ -42,6 +50,10 @@ public class MotoHub extends JavaPlugin {
 
         PortalManager pman = MotoServer.getInstance().getPortalManager();
         tjPortalID = pman.registerPortal(tjPortal.getBlock());
+    }
+
+    public Location getWorldSpawn() {
+        return worldSpawn;
     }
 
     @SuppressWarnings("unused")

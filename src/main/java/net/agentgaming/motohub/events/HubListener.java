@@ -5,6 +5,7 @@ import net.agentgaming.motohub.MotoHub;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,9 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 @SuppressWarnings("unused")
@@ -88,5 +87,28 @@ public class HubListener implements Listener {
     public void onWeatherChange(WeatherChangeEvent event) {
         //No weather on ANY world
         event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onRespawn(PlayerRespawnEvent event) {
+        event.setRespawnLocation(MotoHub.getInstance().getWorldSpawn());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onTeleport(PlayerTeleportEvent event) {
+        Location loc = event.getTo();
+        if (event.isCancelled()) return;
+
+        if (loc == null || loc.getWorld() == null) return;
+        if (loc.equals(loc.getWorld().getSpawnLocation())) {
+            event.setTo(MotoHub.getInstance().getWorldSpawn());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onJoin(PlayerJoinEvent event) {
+        if (!event.getPlayer().hasPlayedBefore()) {
+            event.getPlayer().teleport(MotoHub.getInstance().getWorldSpawn());
+        }
     }
 }
