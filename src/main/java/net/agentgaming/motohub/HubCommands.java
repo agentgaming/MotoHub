@@ -18,8 +18,6 @@ public class HubCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(!(sender instanceof Player)) return false;
-
         if(cmd.getName().equalsIgnoreCase("spawn")) {
             if(args.length > 0) {
                 String player = args[0];
@@ -30,7 +28,11 @@ public class HubCommands implements CommandExecutor {
                     p.teleport(MotoHub.getInstance().getWorldSpawn());
                 }
             } else {
-                ((Player) sender).teleport(MotoHub.getInstance().getWorldSpawn());
+                if(!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.RED + "You must be a player to do that.");
+                } else {
+                    ((Player) sender).teleport(MotoHub.getInstance().getWorldSpawn());
+                }
             }
             return true;
         }
