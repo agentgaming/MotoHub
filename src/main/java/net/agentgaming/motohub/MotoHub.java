@@ -2,6 +2,9 @@ package net.agentgaming.motohub;
 
 import com.mike724.motoapi.midi.MidiBroadcaster;
 import com.mike724.motoapi.portals.PortalManager;
+import com.mike724.motoapi.push.MotoPush;
+import com.mike724.motoapi.push.ServerState;
+import com.mike724.motoapi.push.ServerType;
 import com.mike724.motoserver.MotoCommands;
 import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.effects.PotionSetter;
@@ -52,6 +55,10 @@ public class MotoHub extends JavaPlugin {
             e.printStackTrace();
         }
 
+        //Register the server with MotoPush
+        MotoPush mp = MotoServer.getInstance().getMotoPush();
+        mp.setType(ServerType.HUB);
+        mp.setState(ServerState.OPEN);
 
         this.getLogger().info("MotoHub Enabled");
     }
