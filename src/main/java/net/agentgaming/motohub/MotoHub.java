@@ -56,9 +56,7 @@ public class MotoHub extends JavaPlugin {
         }
 
         //Register the server with MotoPush
-        MotoPush mp = MotoServer.getInstance().getMotoPush();
-        mp.setType(ServerType.HUB);
-        mp.setState(ServerState.OPEN);
+        MotoServer.getInstance().getMotoPush().setIdentity(ServerType.HUB, ServerState.OPEN);
 
         this.getLogger().info("MotoHub Enabled");
     }

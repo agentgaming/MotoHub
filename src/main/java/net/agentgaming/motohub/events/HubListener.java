@@ -1,6 +1,10 @@
 package net.agentgaming.motohub.events;
 
 import com.mike724.motoapi.portals.PortalEnterEvent;
+import com.mike724.motoapi.push.MotoPushReconnect;
+import com.mike724.motoapi.push.ServerState;
+import com.mike724.motoapi.push.ServerType;
+import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.MotoHub;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -109,5 +113,11 @@ public class HubListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent event) {
         event.getPlayer().teleport(MotoHub.getInstance().getWorldSpawn());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onMotoPushReconnect(MotoPushReconnect e) {
+        //Register the server with MotoPush
+        MotoServer.getInstance().getMotoPush().setIdentity(ServerType.HUB, ServerState.OPEN);
     }
 }
