@@ -6,6 +6,7 @@ import com.mike724.motoapi.push.ServerState;
 import com.mike724.motoapi.push.ServerType;
 import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.MotoHub;
+import net.agentgaming.motohub.matchmaking.Matchmaking;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -31,15 +32,16 @@ public class HubListener implements Listener {
     public void onPortalEnter(PortalEnterEvent event) {
         Player p = event.getPlayer();
         Integer id = event.getPortal();
-        Bukkit.broadcastMessage("Player "+p.getName()+" has entered portal #"+id);
-        if(id == MotoHub.getInstance().tjPortalID) {
-            Bukkit.broadcastMessage("This is the TeamJug portal.");
+        Bukkit.broadcastMessage("Player " + p.getName() + " has entered portal #" + id);
+        if (id == MotoHub.getInstance().tjPortalID) {
+            Matchmaking m = new Matchmaking(ServerType.TEAMJUG, 3, MotoHub.getInstance().getWorldSpawn());
+            m.findBestGame(p);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuitMonitor(PlayerQuitEvent event) {
-        event.setQuitMessage(ChatColor.YELLOW+event.getPlayer().getDisplayName()+" has left the hub");
+        event.setQuitMessage(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " has left the hub");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -76,14 +78,14 @@ public class HubListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerDamage(EntityDamageEvent e) {
-        if(e.getEntity() instanceof Player && e.getCause() != EntityDamageEvent.DamageCause.VOID) {
+        if (e.getEntity() instanceof Player && e.getCause() != EntityDamageEvent.DamageCause.VOID) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerOpenInventory(InventoryOpenEvent e) {
-        if(e.getInventory().getType() != InventoryType.PLAYER) {
+        if (e.getInventory().getType() != InventoryType.PLAYER) {
             e.setCancelled(true);
         }
     }

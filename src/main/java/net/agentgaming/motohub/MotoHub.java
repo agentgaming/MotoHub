@@ -2,10 +2,8 @@ package net.agentgaming.motohub;
 
 import com.mike724.motoapi.midi.MidiBroadcaster;
 import com.mike724.motoapi.portals.PortalManager;
-import com.mike724.motoapi.push.MotoPush;
 import com.mike724.motoapi.push.ServerState;
 import com.mike724.motoapi.push.ServerType;
-import com.mike724.motoserver.MotoCommands;
 import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.effects.PotionSetter;
 import net.agentgaming.motohub.events.HubListener;
@@ -28,17 +26,6 @@ public class MotoHub extends JavaPlugin {
 
     //MidiBroadcaster
     MidiBroadcaster midi;
-
-    //BungeecordHelper
-    private BungeecordHelper bch = null;
-    private String bungeeServer = "";
-
-    @Override
-    public void onLoad() {
-        BungeecordHelper _bch = new BungeecordHelper();
-        bungeeServer = new String(bch.getServer());
-        bch = _bch;
-    }
 
     @Override
     public void onEnable() {
