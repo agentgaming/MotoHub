@@ -79,6 +79,7 @@ public class Matchmaking {
 
         if (canidates.size() > 0) {
             TreeMap<String, Integer> sort = new TreeMap<>(new ValueComparator(canidates));
+            sort.putAll(canidates);
             p.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
             connectToServer(p, sort.firstEntry().getKey());
         } else {
