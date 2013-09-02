@@ -37,11 +37,12 @@ public class Matchmaking {
         mp = MotoServer.getInstance().getMotoPush();
     }
 
-    public void findBestGame(final Player p) {
-        if (isMatchmaking(p)) return;
-        matchMaking.add(p);
+    public void findBestGame(final Player... p) {
+        for (Player player : p) {
+            if (isMatchmaking(player))
+                matchMaking.add(player);
+        }
 
-        NetworkPlayer np = MotoServer.getInstance().getStorage().getObject(p.getName(), NetworkPlayer.class);
         JSONObject peers = mp.apiMethod("getpeersbytype", serverType.name());
         Iterator<?> keys = peers.keys();
 
@@ -55,19 +56,26 @@ public class Matchmaking {
             try {
                 if (peers.get(key) instanceof JSONObject) {
                     JSONObject peer = (JSONObject) peers.get(key);
-                    if (peer.getInt("numPlayers") >= maxPlayers || peer.getString("state") != ServerState.OPEN.name() || peer.getString("alias") == "__unknown__") {
+                    if (peer.getInt("numPlayers") + p.length > maxPlayers || peer.getString("state") != ServerState.OPEN.name() || peer.getString("alias") == "__unknown__") {
                         amountFull++;
                         continue;
                     }
 
-                    Integer numFriends = 0;
-                    JSONArray players = peer.getJSONArray("players");
+                    if (p.length == 1) {
+                        NetworkPlayer np = MotoServer.getInstance().getStorage().getObject(p[0].getName(), NetworkPlayer.class);
 
-                    for (int i = 0; i < players.length(); i++) {
-                        if (np.getFriends().contains(players.getString(i))) numFriends++;
+                        Integer numFriends = 0;
+                        JSONArray players = peer.getJSONArray("players");
+
+                        for (int i = 0; i < players.length(); i++) {
+                            if (np.getFriends().contains(players.getString(i))) numFriends++;
+                        }
+
+                        canidates.put(peer.getString("alias"), numFriends);
+                    } else if (p.length > 1) {
+                        canidates.put(peer.getString("alias"), 0);
+                        break;
                     }
-
-                    canidates.put(peer.getString("alias"), numFriends);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -78,16 +86,23 @@ public class Matchmaking {
         if (canidates.size() > 0) {
             TreeMap<String, Integer> sort = new TreeMap<>(new ValueComparator(canidates));
             sort.putAll(canidates);
-            p.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
-            matchMaking.remove(p);
-            connectToServer(p, sort.firstEntry().getKey());
+
+            for (Player player : p) {
+                player.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
+                matchMaking.remove(p);
+                connectToServer(player, sort.firstEntry().getKey());
+            }
         } else {
             if (totalPeers == 0) {
-                p.sendMessage(ChatColor.RED + "This gamemode has no servers!");
-                matchMaking.remove(p);
+                for (Player player : p) {
+                    player.sendMessage(ChatColor.RED + "This gamemode has no servers!");
+                    matchMaking.remove(p);
+                }
             } else if (totalPeers == amountFull) {
-                p.sendMessage(ChatColor.AQUA + "All games are full.. we will keep trying.");
-                p.teleport(waitingRoom);
+                for (Player player : p) {
+                    player.sendMessage(ChatColor.AQUA + "All games are full.. we will keep trying.");
+                    player.teleport(waitingRoom);
+                }
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(MotoHub.getInstance(), new Runnable() {
                     @Override
                     public void run() {
