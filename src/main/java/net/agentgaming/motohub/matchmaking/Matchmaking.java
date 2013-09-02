@@ -79,10 +79,12 @@ public class Matchmaking {
             TreeMap<String, Integer> sort = new TreeMap<>(new ValueComparator(canidates));
             sort.putAll(canidates);
             p.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
+            matchMaking.remove(p);
             connectToServer(p, sort.firstEntry().getKey());
         } else {
             if (totalPeers == 0) {
                 p.sendMessage(ChatColor.RED + "This gamemode has no servers!");
+                matchMaking.remove(p);
             } else if (totalPeers == amountFull) {
                 p.sendMessage(ChatColor.AQUA + "All games are full.. we will keep trying.");
                 p.teleport(waitingRoom);
