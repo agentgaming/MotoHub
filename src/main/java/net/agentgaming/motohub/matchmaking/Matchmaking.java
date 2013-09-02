@@ -27,12 +27,14 @@ public class Matchmaking {
     private MotoPush mp;
 
     private ArrayList<Player> matchMaking;
+    private HashMap<Player, ArrayList<Player>> groups;
 
     public Matchmaking(ServerType serverType, Integer maxPlayers, Location waitingRoom) {
         this.serverType = serverType;
         this.maxPlayers = maxPlayers;
         this.waitingRoom = waitingRoom;
         this.matchMaking = new ArrayList<Player>();
+        this.groups = new HashMap<Player, ArrayList<Player>>();
 
         mp = MotoServer.getInstance().getMotoPush();
     }
@@ -129,6 +131,57 @@ public class Matchmaking {
 
         MotoHub.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(MotoHub.getInstance(), "BungeeCord");
         p.sendPluginMessage(MotoHub.getInstance(), "BungeeCord", b.toByteArray());
+    }
+
+    public void joinGroup(Player leader, Player member) {
+        if (isInGroup(member)) {
+            member.sendMessage(ChatColor.RED + "You are already in a group!");
+            return;
+        }
+
+        boolean cancel = false;
+
+        if (isMatchmaking(leader)) {
+            member.sendMessage(ChatColor.AQUA + "You cannot join this group because the leader is matchmaking");
+            leader.sendMessage(ChatColor.AQUA + "'" + member.getDisplayName() + "' could not join your group because you are matchmaking");
+            cancel = true;
+        }
+
+        if (isMatchmaking(member)) {
+            member.sendMessage(ChatColor.AQUA + "You can't join a group while you are matchmaking.");
+            cancel = true;
+        }
+
+        if (cancel) return;
+        if (!groups.containsKey(leader)) return;
+
+        groups.get(leader).add(member);
+        member.sendMessage(ChatColor.AQUA + "You have joined '" + leader.getDisplayName() + "'s group!");
+    }
+
+    public void leaveGroup(Player leader, Player member) {
+        if (leader == member) {
+            for (Player p : groups.get(leader)) {
+                p.sendMessage(ChatColor.AQUA + "Your group has been disbanded!");
+            }
+            groups.remove(leader);
+            return;
+        }
+
+        if (groups.get(leader).contains(member)) {
+            groups.get(leader).remove(member);
+            member.sendMessage(ChatColor.AQUA + "You have left '" + leader.getDisplayName() + "'s group!");
+        } else {
+            member.sendMessage(ChatColor.RED + "You are not in '" + leader.getDisplayName() + "'s group!");
+        }
+    }
+
+    public boolean isInGroup(Player p) {
+        if (groups.containsKey(p)) return true;
+        for (Player k : groups.keySet()) {
+            if (groups.get(k).contains(p)) return true;
+        }
+        return false;
     }
 
     private class ValueComparator implements Comparator<String> {
