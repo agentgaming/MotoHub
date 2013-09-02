@@ -55,11 +55,10 @@ public class Matchmaking {
             try {
                 if (peers.get(key) instanceof JSONObject) {
                     JSONObject peer = (JSONObject) peers.get(key);
-                    if (peer.getInt("numPlayers") >= maxPlayers || peer.getString("state") != ServerState.OPEN.name()) {
+                    if (peer.getInt("numPlayers") >= maxPlayers || peer.getString("state") != ServerState.OPEN.name() || peer.getString("alias") == "__unknown__") {
                         amountFull++;
                         continue;
                     }
-                    if (peer.getString("alias") == "__unknown__") continue;
 
                     Integer numFriends = 0;
                     JSONArray players = peer.getJSONArray("players");
