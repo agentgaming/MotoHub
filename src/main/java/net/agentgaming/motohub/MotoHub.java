@@ -29,6 +29,17 @@ public class MotoHub extends JavaPlugin {
     //MidiBroadcaster
     MidiBroadcaster midi;
 
+    //BungeecordHelper
+    private BungeecordHelper bch = null;
+    private String bungeeServer = "";
+
+    @Override
+    public void onLoad() {
+        BungeecordHelper _bch = new BungeecordHelper();
+        bungeeServer = new String(bch.getServer());
+        bch = _bch;
+    }
+
     @Override
     public void onEnable() {
         //Set our instance
