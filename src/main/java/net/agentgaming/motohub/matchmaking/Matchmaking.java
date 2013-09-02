@@ -55,8 +55,7 @@ public class Matchmaking {
             try {
                 if (peers.get(key) instanceof JSONObject) {
                     JSONObject peer = (JSONObject) peers.get(key);
-                    if (peer.getString("state") != ServerState.OPEN.name()) continue;
-                    if (peer.getInt("numPlayers") >= maxPlayers) {
+                    if (peer.getInt("numPlayers") >= maxPlayers || peer.getString("state") != ServerState.OPEN.name()) {
                         amountFull++;
                         continue;
                     }
