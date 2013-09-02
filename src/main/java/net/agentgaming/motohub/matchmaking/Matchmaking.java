@@ -85,8 +85,7 @@ public class Matchmaking {
         } else {
             if (totalPeers == 0) {
                 p.sendMessage(ChatColor.RED + "This gamemode has no servers!");
-            }
-            if (totalPeers == amountFull) {
+            } else if (totalPeers == amountFull) {
                 p.sendMessage(ChatColor.AQUA + "All games are full.. we will keep trying.");
                 p.teleport(waitingRoom);
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(MotoHub.getInstance(), new Runnable() {
