@@ -1,6 +1,5 @@
 package net.agentgaming.motohub;
 
-import com.mike724.motoapi.midi.MidiBroadcaster;
 import com.mike724.motoapi.portals.PortalManager;
 import com.mike724.motoapi.push.ServerState;
 import com.mike724.motoapi.push.ServerType;
@@ -12,8 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.sound.midi.MidiUnavailableException;
-
 public class MotoHub extends JavaPlugin {
 
     private static MotoHub instance;
@@ -23,9 +20,6 @@ public class MotoHub extends JavaPlugin {
 
     //World spawn
     Location worldSpawn;
-
-    //MidiBroadcaster
-    MidiBroadcaster midi;
 
     @Override
     public void onEnable() {
@@ -45,13 +39,6 @@ public class MotoHub extends JavaPlugin {
         //Setup spawn command
         this.worldSpawn = new Location(Bukkit.getWorlds().get(0), 0.5F, 65, 0.5F, 0, 0);
         getCommand("spawn").setExecutor(new HubCommands(this));
-
-        //TODO: Temporary
-        try {
-            midi = new MidiBroadcaster();
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
-        }
 
         //Register the server with MotoPush
         MotoServer.getInstance().getMotoPush().setIdentity(ServerType.HUB, ServerState.OPEN);
@@ -74,10 +61,6 @@ public class MotoHub extends JavaPlugin {
 
     public Location getWorldSpawn() {
         return worldSpawn;
-    }
-
-    public MidiBroadcaster getMidi() {
-        return midi;
     }
 
     @SuppressWarnings("unused")

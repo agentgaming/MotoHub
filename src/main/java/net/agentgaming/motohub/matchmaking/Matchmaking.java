@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mike724.motoapi.push.MotoPush;
 import com.mike724.motoapi.push.ServerState;
 import com.mike724.motoapi.push.ServerType;
+import com.mike724.motoapi.storage.Storage;
 import com.mike724.motoapi.storage.defaults.NetworkPlayer;
 import com.mike724.motoserver.MotoServer;
 import net.agentgaming.motohub.MotoHub;
@@ -82,6 +83,7 @@ public class Matchmaking {
             for (Player player : p) {
                 player.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
                 matchMaking.remove(p);
+
                 connectToServer(player, sort.firstEntry().getKey());
             }
         } else {
@@ -118,6 +120,13 @@ public class Matchmaking {
             out.writeUTF(s);
         } catch (IOException e) {
         }
+
+        Storage storage = MotoServer.getInstance().getStorage();
+
+        if (storage.cacheContains(p.getName(), NetworkPlayer.class)) {
+            storage.saveAllObjectsForPlayer(p.getName(), false);
+        }
+
 
         MotoHub.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(MotoHub.getInstance(), "BungeeCord");
         p.sendPluginMessage(MotoHub.getInstance(), "BungeeCord", b.toByteArray());
