@@ -47,7 +47,7 @@ public class Matchmaking {
                 matchMaking.add(player);
         }
 
-        String json = mp.apiMethod("getpeersbytype", serverType.name()).toString();
+        String json = mp.apiMethod("getpeersbytype", serverType.name());
         Type type = new TypeToken<ArrayList<PeerByType>>() {
         }.getType();
         ArrayList<PeerByType> peers = gson.fromJson(json, type);
