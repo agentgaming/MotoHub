@@ -1,8 +1,7 @@
 package net.agentgaming.motohub.matchmaking;
 
-import com.amazonaws.util.json.JSONArray;
-import com.amazonaws.util.json.JSONException;
-import com.amazonaws.util.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mike724.motoapi.push.MotoPush;
 import com.mike724.motoapi.push.ServerState;
 import com.mike724.motoapi.push.ServerType;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class Matchmaking {
@@ -25,6 +25,7 @@ public class Matchmaking {
     private Integer maxPlayers;
 
     private MotoPush mp;
+    private Gson gson;
 
     private ArrayList<Player> matchMaking;
     private HashMap<Player, ArrayList<Player>> groups;
@@ -37,6 +38,7 @@ public class Matchmaking {
         this.groups = new HashMap<Player, ArrayList<Player>>();
 
         mp = MotoServer.getInstance().getMotoPush();
+        gson = new Gson();
     }
 
     public void findBestGame(final Player... p) {
@@ -45,49 +47,37 @@ public class Matchmaking {
                 matchMaking.add(player);
         }
 
-        JSONObject peers = mp.apiMethod("getpeersbytype", serverType.name());
-        Iterator<?> keys = peers.keys();
+        String json = mp.apiMethod("getpeersbytype", serverType.name()).toString();
+        Type type = new TypeToken<ArrayList<PeerByType>>() {
+        }.getType();
+        ArrayList<PeerByType> peers = gson.fromJson(json, type);
 
-        HashMap<String, Integer> canidates = new HashMap<>();
-
-        Integer totalPeers = 0;
+        HashMap<String, Integer> candidates = new HashMap<>();
+        Integer totalPeers = peers.size();
         Integer amountFull = 0;
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            totalPeers++;
-            try {
-                if (peers.get(key) instanceof JSONObject) {
-                    JSONObject peer = (JSONObject) peers.get(key);
-                    if (peer.getInt("numPlayers") + p.length > maxPlayers || peer.getString("state") != ServerState.OPEN.name() || peer.getString("alias") == "__unknown__") {
-                        amountFull++;
-                        continue;
-                    }
 
-                    if (p.length == 1) {
-                        NetworkPlayer np = MotoServer.getInstance().getStorage().getObject(p[0].getName(), NetworkPlayer.class);
-
-                        Integer numFriends = 0;
-                        JSONArray players = peer.getJSONArray("players");
-
-                        for (int i = 0; i < players.length(); i++) {
-                            if (np.getFriends().contains(players.getString(i))) numFriends++;
-                        }
-
-                        canidates.put(peer.getString("alias"), numFriends);
-                    } else if (p.length > 1) {
-                        canidates.put(peer.getString("alias"), 0);
-                        break;
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        for (PeerByType peer : peers) {
+            if (peer.getNumPlayers() + p.length > maxPlayers || !peer.getState().equals(ServerState.OPEN) || peer.getAlias().equals("__unknown__")) {
+                amountFull++;
                 continue;
+            }
+
+            if (p.length == 1) {
+                NetworkPlayer np = MotoServer.getInstance().getStorage().getObject(p[0].getName(), NetworkPlayer.class);
+
+                Integer numFriends = 0;
+                for (String s : peer.getPlayers()) if (np.getFriends().contains(s)) numFriends++;
+
+                candidates.put(peer.getAlias(), numFriends);
+            } else if (p.length > 1) {
+                candidates.put(peer.getAlias(), 0);
+                break;
             }
         }
 
-        if (canidates.size() > 0) {
-            TreeMap<String, Integer> sort = new TreeMap<>(new ValueComparator(canidates));
-            sort.putAll(canidates);
+        if (candidates.size() > 0) {
+            TreeMap<String, Integer> sort = new TreeMap<>(new ValueComparator(candidates));
+            sort.putAll(candidates);
 
             for (Player player : p) {
                 player.sendMessage(ChatColor.AQUA + "Found game on '" + sort.firstEntry().getKey() + "'!");
