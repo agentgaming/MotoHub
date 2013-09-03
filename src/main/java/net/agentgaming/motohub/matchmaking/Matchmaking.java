@@ -111,7 +111,7 @@ public class Matchmaking {
         return matchMaking.contains(p);
     }
 
-    public void connectToServer(Player p, String s) {
+    public void connectToServer(final Player p, String s) {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
 
@@ -127,9 +127,20 @@ public class Matchmaking {
             storage.saveAllObjectsForPlayer(p.getName(), false);
         }
 
+        final String pName = new String(p.getName());
+        mp.cmd("pd", pName);
 
         MotoHub.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(MotoHub.getInstance(), "BungeeCord");
         p.sendPluginMessage(MotoHub.getInstance(), "BungeeCord", b.toByteArray());
+
+        MotoHub.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(MotoHub.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                if (p != null && p.isOnline()) {
+                    mp.cmd("pc", pName);
+                }
+            }
+        }, 2);
     }
 
     public void joinGroup(Player leader, Player member) {
