@@ -140,7 +140,7 @@ public class Matchmaking {
                     mp.cmd("pc", pName);
                 }
             }
-        }, 2);
+        }, 40);
     }
 
     public void joinGroup(Player leader, Player member) {
