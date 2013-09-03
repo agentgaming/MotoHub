@@ -93,7 +93,9 @@ public class HubListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onWeatherChange(WeatherChangeEvent event) {
         //No weather on ANY world
-        event.setCancelled(true);
+        if(event.toWeatherState()) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
