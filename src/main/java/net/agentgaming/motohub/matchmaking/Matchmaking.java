@@ -67,7 +67,9 @@ public class Matchmaking {
                 NetworkPlayer np = MotoServer.getInstance().getStorage().getObject(p[0].getName(), NetworkPlayer.class);
 
                 Integer numFriends = 0;
-                for (String s : peer.getPlayers()) if (np.getFriends().contains(s)) numFriends++;
+                for (String s : peer.getPlayers()) {
+                    if (np.getFriends().contains(s)) numFriends++;
+                }
 
                 candidates.put(peer.getAlias(), numFriends);
             } else if (p.length > 1) {
@@ -132,15 +134,6 @@ public class Matchmaking {
 
         MotoHub.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(MotoHub.getInstance(), "BungeeCord");
         p.sendPluginMessage(MotoHub.getInstance(), "BungeeCord", b.toByteArray());
-
-        MotoHub.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(MotoHub.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (p != null && p.isOnline()) {
-                    mp.cmd("pc", pName);
-                }
-            }
-        }, 40);
     }
 
     public void joinGroup(Player leader, Player member) {
