@@ -7,4 +7,3 @@ commands:
    spawn:
       description: Teleport to the hub spawn.
       usage: /spawn [player]
-      aliases: [hub]
